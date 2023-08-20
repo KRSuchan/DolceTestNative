@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   univMark: {
-    flex: 0.4,
+    flex: 0.5,
     backgroundColor: "#30960099",
     justifyContent: "center",
     alignItems: "center",
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
   },
   mainImg: {
     width: "100%",
-    height: 200,
+    height: "100%",
   },
 });
