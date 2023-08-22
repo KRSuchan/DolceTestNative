@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const [menu, setMenu] = useState("Loading...");
-  var day = new Date();
-  var rstrTime = "";
+  const [bus, setBus] = useState("Loading...");
+  let day = new Date();
+  let rstrTime = "";
   const WEEKDAY = [
     "일요일",
     "월요일",
@@ -23,16 +24,34 @@ export default function App() {
   } else {
     rstrTime = "중식";
   }
-  const getMenu = async () => {
-    const response = await fetch(
+  const getInform = async () => {
+    let response = await fetch(
       `https://nwitter-52f77-default-rtdb.firebaseio.com/prof_menu/${week}/${rstrTime}.json`
     );
-    const json = await response.json();
+    let json = await response.json();
     setMenu(json);
+    response = await fetch(
+      `https://nwitter-52f77-default-rtdb.firebaseio.com/busToKIT/bus.json`
+    );
+    json = await response.json();
+    let buses =
+      "금오공대로 오는 중인 버스들\n\n" +
+      "버스번호" +
+      "\t\t\t\t\t\t\t\t" +
+      "남은 정류장 수\n";
+    for (let index = 0; index < json.length; index++) {
+      buses +=
+        "\n" +
+        json[index].routeno +
+        "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" +
+        json[index].arrprevstationcnt +
+        "\n";
+    }
+    setBus(buses);
   };
 
   useEffect(() => {
-    getMenu();
+    getInform();
   }, []);
   return (
     <View style={styles.container}>
@@ -45,7 +64,12 @@ export default function App() {
           borderRadius: 10,
           margin: 50,
         }}>
-        <Image source={flood} style={styles.mainImg} />
+        <Text
+          style={{
+            textAlign: "center",
+          }}>
+          {bus}
+        </Text>
       </View>
       <View
         style={{
@@ -80,7 +104,7 @@ const styles = StyleSheet.create({
   },
   univMark: {
     flex: 0.5,
-    backgroundColor: "#30960099",
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 90,
