@@ -1,9 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
-import flood from "./assets/floodInKIT.png";
 import { useEffect, useState } from "react";
 
 export default function App() {
+  // 변하는 값 useState
   const [menu, setMenu] = useState("Loading...");
   const [bus, setBus] = useState("Loading...");
   let day = new Date();
@@ -19,17 +19,21 @@ export default function App() {
   ];
   let week = WEEKDAY[day.getDay()];
   let hours = day.getHours();
+  // 시간이 14시 이후 이면 석식이 출력
   if (hours > 14) {
     rstrTime = "석식";
   } else {
     rstrTime = "중식";
   }
   const getInform = async () => {
+    // firebase로 부터 요일, 중식 혹은 석식에 따라 json fetch
     let response = await fetch(
       `https://nwitter-52f77-default-rtdb.firebaseio.com/prof_menu/${week}/${rstrTime}.json`
     );
     let json = await response.json();
     setMenu(json);
+
+    // firebase로 부터 금오공대로 오는 버스번호와 버스별 남은 정류장 json fetch
     response = await fetch(
       `https://nwitter-52f77-default-rtdb.firebaseio.com/busToKIT/bus.json`
     );
@@ -49,9 +53,11 @@ export default function App() {
     }
     setBus(buses);
   };
-
+  // 1초마다 업데이트
   useEffect(() => {
-    getInform();
+    let timer = setInterval(() => {
+      getInform();
+    }, 1000);
   }, []);
   return (
     <View style={styles.container}>
